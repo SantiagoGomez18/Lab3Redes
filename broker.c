@@ -1,3 +1,7 @@
+// broker.c
+// Compila: gcc -o broker broker.c
+// Uso: ./broker <puerto>
+// Ejemplo: ./broker 6000
 
 #include <stdio.h>
 #include <stdlib.h>
