@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     brokerAddr.sin_port = htons(broker_port);
     inet_pton(AF_INET, broker_ip, &brokerAddr.sin_addr);
 
-    printf("Publisher para mensaje [%s]. Escribe eventos (Ctrl+C para salir):\n", topic);
+    printf("Publisher para mensaje [%s]. Escribe eventos:\n", topic);
 
     while (1) {
         printf("> ");

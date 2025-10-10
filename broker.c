@@ -27,7 +27,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // ⚠️ Reducir el buffer de recepción para provocar pérdida
+    // Reducir el buffer de recepción para provocar pérdida
     int buf_size = 2048; // 2 KB
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &buf_size, sizeof(buf_size)) < 0) {
         perror("Error al ajustar el tamaño del buffer");
