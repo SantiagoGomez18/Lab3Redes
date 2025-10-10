@@ -10,7 +10,7 @@
 
 struct Subscriber {
     struct sockaddr_in addr;
-    char partido[64];
+    char mensaje[64];
 };
 
 int main() {
@@ -45,28 +45,26 @@ int main() {
 
         // Si el mensaje es de suscripción
         if (strncmp(buffer, "SUBSCRIBE|", 10) == 0) {
-            char *partido = buffer + 10;
+            char *mensaje = buffer + 10;
 
             if (num_subs < MAX_SUBS) {
                 subs[num_subs].addr = cliaddr;
-                strncpy(subs[num_subs].partido, partido, sizeof(subs[num_subs].partido));
+                strncpy(subs[num_subs].mensaje, mensaje, sizeof(subs[num_subs].mensaje));
                 num_subs++;
-                printf("Nuevo suscriptor para [%s]. Total: %d\n", partido, num_subs);
+                printf("Nuevo suscriptor para [%s]. Total: %d\n", mensaje, num_subs);
             }
         } else {
             // Mensaje de publicador
             printf("Broker recibió: %s\n", buffer);
 
-            // Extraer partido antes del '|'
             char *sep = strchr(buffer, '|');
             if (!sep) continue; // formato inválido
             *sep = '\0';
-            char *partido = buffer;
+            char *mensaje = buffer;
             char *mensaje = sep + 1;
 
-            // Reenviar a suscriptores que siguen ese partido
             for (int i = 0; i < num_subs; i++) {
-                if (strcmp(subs[i].partido, partido) == 0) {
+                if (strcmp(subs[i].mensaje, mensaje) == 0) {
                     sendto(sockfd, mensaje, strlen(mensaje), 0,
                            (struct sockaddr *)&subs[i].addr, sizeof(subs[i].addr));
                 }

@@ -1,6 +1,6 @@
 // subscriber.c
 // Compila: gcc -o subscriber subscriber.c
-// Uso: ./subscriber <broker_ip> <broker_port> <mi_puerto> <partido>
+// Uso: ./subscriber <broker_ip> <broker_port> <mi_puerto> <mensaje>
 // Ejemplo: ./subscriber 127.0.0.1 6000 7001 EQUIPOA_VS_EQUIPOB
 
 #include <stdio.h>
@@ -13,14 +13,14 @@
 
 int main(int argc, char *argv[]) {
     if (argc != 5) {
-        fprintf(stderr, "Uso: %s <broker_ip> <broker_port> <mi_puerto> <partido>\n", argv[0]);
+        fprintf(stderr, "Uso: %s <broker_ip> <broker_port> <mi_puerto> <mensaje>\n", argv[0]);
         exit(1);
     }
 
     const char *broker_ip = argv[1];
     int broker_port = atoi(argv[2]);
     int mi_puerto = atoi(argv[3]);
-    const char *partido = argv[4];
+    const char *mensaje = argv[4];
 
     int sockfd;
     struct sockaddr_in localAddr, brokerAddr;
@@ -50,11 +50,11 @@ int main(int argc, char *argv[]) {
 
     // Enviar suscripción
     char subMsg[BUF_SIZE];
-    snprintf(subMsg, sizeof(subMsg), "SUBSCRIBE|%s", partido);
+    snprintf(subMsg, sizeof(subMsg), "SUBSCRIBE|%s", mensaje);
     sendto(sockfd, subMsg, strlen(subMsg), 0,
            (struct sockaddr*)&brokerAddr, sizeof(brokerAddr));
 
-    printf("Suscrito al partido [%s]. Esperando eventos...\n", partido);
+    printf("Suscrito al publicador [%s]. Esperando eventos...\n", mensaje);
 
     while (1) {
         ssize_t n = recvfrom(sockfd, buffer, sizeof(buffer)-1, 0, NULL, NULL);
