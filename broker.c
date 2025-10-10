@@ -21,9 +21,18 @@ int main() {
     struct Subscriber subs[MAX_SUBS];
     int num_subs = 0;
 
+    // Crear socket UDP
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         perror("Error al crear el socket");
         exit(EXIT_FAILURE);
+    }
+
+    // ⚠️ Reducir el buffer de recepción para provocar pérdida
+    int buf_size = 2048; // 2 KB
+    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &buf_size, sizeof(buf_size)) < 0) {
+        perror("Error al ajustar el tamaño del buffer");
+    } else {
+        printf("Buffer de recepción ajustado a %d bytes\n", buf_size);
     }
 
     memset(&servaddr, 0, sizeof(servaddr));
@@ -41,6 +50,8 @@ int main() {
 
     while (1) {
         int n = recvfrom(sockfd, buffer, MAXLINE - 1, 0, (struct sockaddr *)&cliaddr, &len);
+        if (n < 0) continue;
+
         buffer[n] = '\0';
 
         // Si el mensaje es de suscripción
@@ -58,13 +69,13 @@ int main() {
             printf("Broker recibió: %s\n", buffer);
 
             char *sep = strchr(buffer, '|');
-            if (!sep) continue; // formato inválido
+            if (!sep) continue;
             *sep = '\0';
-            char *mensaje = buffer;
+            char *topic = buffer;
             char *mensaje = sep + 1;
 
             for (int i = 0; i < num_subs; i++) {
-                if (strcmp(subs[i].mensaje, mensaje) == 0) {
+                if (strcmp(subs[i].mensaje, topic) == 0) {
                     sendto(sockfd, mensaje, strlen(mensaje), 0,
                            (struct sockaddr *)&subs[i].addr, sizeof(subs[i].addr));
                 }

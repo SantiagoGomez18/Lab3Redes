@@ -1,8 +1,3 @@
-// subscriber.c
-// Compila: gcc -o subscriber subscriber.c
-// Uso: ./subscriber <broker_ip> <broker_port> <mi_puerto> <mensaje>
-// Ejemplo: ./subscriber 127.0.0.1 6000 7001 EQUIPOA_VS_EQUIPOB
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,11 +51,12 @@ int main(int argc, char *argv[]) {
 
     printf("Suscrito al publicador [%s]. Esperando eventos...\n", mensaje);
 
+    int count = 0;
     while (1) {
         ssize_t n = recvfrom(sockfd, buffer, sizeof(buffer)-1, 0, NULL, NULL);
         if (n > 0) {
             buffer[n] = '\0';
-            printf(">> %s\n", buffer);
+            printf("(%d) >> %s\n", ++count, buffer);
             fflush(stdout);
         }
     }

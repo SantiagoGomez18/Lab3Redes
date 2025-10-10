@@ -1,8 +1,3 @@
-// publisher.c
-// Compila: gcc -o publisher publisher.c
-// Uso: ./publisher <broker_ip> <broker_port> <mensaje>
-// Ejemplo: ./publisher 127.0.0.1 6000 EQUIPOA_VS_EQUIPOB
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,7 +14,7 @@ int main(int argc, char *argv[]) {
 
     const char *broker_ip = argv[1];
     int broker_port = atoi(argv[2]);
-    const char *mensaje = argv[3];
+    const char *topic = argv[3];
 
     int sockfd;
     struct sockaddr_in brokerAddr;
@@ -36,7 +31,7 @@ int main(int argc, char *argv[]) {
     brokerAddr.sin_port = htons(broker_port);
     inet_pton(AF_INET, broker_ip, &brokerAddr.sin_addr);
 
-    printf("Publisher para mensaje [%s]. Escribe eventos):\n", mensaje);
+    printf("Publisher para mensaje [%s]. Escribe eventos (Ctrl+C para salir):\n", topic);
 
     while (1) {
         printf("> ");
@@ -44,10 +39,10 @@ int main(int argc, char *argv[]) {
         if (!fgets(buffer, sizeof(buffer), stdin)) break;
         buffer[strcspn(buffer, "\n")] = '\0';
 
-        char mensaje[BUF_SIZE];
-        snprintf(mensaje, sizeof(mensaje), "%s|%s", mensaje, buffer);
+        char msg[BUF_SIZE];
+        snprintf(msg, sizeof(msg), "%s|%s", topic, buffer);
 
-        sendto(sockfd, mensaje, strlen(mensaje), 0,
+        sendto(sockfd, msg, strlen(msg), 0,
                (struct sockaddr*)&brokerAddr, sizeof(brokerAddr));
     }
 
