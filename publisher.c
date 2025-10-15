@@ -33,14 +33,16 @@ int main(int argc, char *argv[]) {
 
     printf("Publisher para mensaje [%s]. Escribe eventos:\n", topic);
 
+    int seq = 0;  
+
     while (1) {
         printf("> ");
         fflush(stdout);
         if (!fgets(buffer, sizeof(buffer), stdin)) break;
-        buffer[strcspn(buffer, "\n")] = '\0';
+        buffer[strcspn(buffer, "\n")] = '\0'; 
 
         char msg[BUF_SIZE];
-        snprintf(msg, sizeof(msg), "%s|%s", topic, buffer);
+        snprintf(msg, sizeof(msg), "%s|SEQ|%d|%s", topic, seq++, buffer);
 
         sendto(sockfd, msg, strlen(msg), 0,
                (struct sockaddr*)&brokerAddr, sizeof(brokerAddr));
