@@ -12,7 +12,6 @@ msgs=(
 "Minuto 38: Falta peligrosa de jugador 6 de Equipo B"
 "Minuto 42: Tiro libre directo, el balón pasa rozando el palo"
 "Minuto 45+1: Oportunidad de gol fallida por jugador 11 de Equipo A"
-"Minuto 45+2: El árbitro pita medio tiempo, marcador 1-1"
 "Minuto 46: Comienza el segundo tiempo"
 "Minuto 53: Gol de Equipo B, jugador 7, remate desde fuera del área"
 "Minuto 60: Cambio, jugador 12 entra por jugador 6 de Equipo A"
@@ -23,5 +22,4 @@ msgs=(
 
 for msg in "${msgs[@]}"; do
   printf 'Futbol|%s\n' "$msg" | nc -u -w1 127.0.0.1 6000
-  sleep 1
 done
